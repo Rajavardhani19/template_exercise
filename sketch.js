@@ -1,7 +1,7 @@
 const r = require("raylib");
 
-const windowWidth = 300;
-const windowHeight = 200;
+const windowWidth = 1000;
+const windowHeight = 1000;
 const FPS = 50;
 
 let detectorX = 0;
@@ -16,6 +16,10 @@ const particleY = 0;
 const particleWidth = windowWidth / 6;
 const particleHeight = windowHeight;
 
+const endXParticle = particleX + particleWidth;
+let diffBtwX = particleX - detectorX;
+
+let color = r.WHITE;
 
 function running() {
     return !r.WindowShouldClose();
@@ -37,16 +41,25 @@ function direction() {
 
 function update() {
     if (detectorX + detectorWidth === windowWidth || backward === true) {
-        detectorX -= 3;
+        detectorX -= 1;
     }
     else {
-        detectorX += 3;
+        detectorX += 1;
     }
     direction();
+    diffBtwX = particleX - detectorX;
+}
+
+function detectorColourChange() {
+    color = r.WHITE;
+    if (diffBtwX <= detectorWidth && detectorX <= endXParticle) {
+        color = r.RED;
+    }
 }
 
 function detector() {
-    r.DrawRectangle(detectorX, detectorY, detectorWidth, detectorHeight, r.WHITE);
+    detectorColourChange(color);
+    r.DrawRectangle(detectorX, detectorY, detectorWidth, detectorHeight, color);
 }
 
 
