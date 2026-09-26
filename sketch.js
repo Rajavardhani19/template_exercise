@@ -11,6 +11,12 @@ const detectorHeight = windowHeight;
 
 let backward = false;
 
+const particleX = windowWidth / 3;
+const particleY = 0;
+const particleWidth = windowWidth / 6;
+const particleHeight = windowHeight;
+
+
 function running() {
     return !r.WindowShouldClose();
 }
@@ -43,9 +49,14 @@ function detector() {
     r.DrawRectangle(detectorX, detectorY, detectorWidth, detectorHeight, r.WHITE);
 }
 
+function particle() {
+    r.DrawRectangle(particleX, particleY, particleWidth, particleHeight, r.BLUE);
+}
+
 function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
+    particle();
     detector();
     r.EndDrawing();
 }
