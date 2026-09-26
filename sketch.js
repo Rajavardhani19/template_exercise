@@ -49,6 +49,7 @@ function detector() {
     r.DrawRectangle(detectorX, detectorY, detectorWidth, detectorHeight, r.WHITE);
 }
 
+
 function particle() {
     r.DrawRectangle(particleX, particleY, particleWidth, particleHeight, r.BLUE);
 }
