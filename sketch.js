@@ -16,6 +16,11 @@ const particleY = 0;
 const particleWidth = windowWidth / 6;
 const particleHeight = windowHeight;
 
+const particle2X = windowWidth / 2;
+const particle2Y = 0;
+const particle2Width = windowWidth / 12;
+const particle2Height = windowHeight;
+
 let color = r.WHITE;
 
 function running() {
@@ -56,13 +61,16 @@ function detectorColourChange(Xparticle, Xdetector, detectWidth, partWidth) {
 }
 
 function detector() {
-    detectorX <= particleX + particleWidth
-    detectorColourChange(particleX, detectorX, detectorWidth, particleWidth);
-
-    // else {
-    //     detectorColourChange(particle2X, detectorX, detectorWidth, particle2Width);
-    // }
+    if (detectorX <= particleX + particleWidth) {
+        detectorColourChange(particleX, detectorX, detectorWidth, particleWidth);
+    }
+    else {
+        detectorColourChange(particle2X, detectorX, detectorWidth, particle2Width);
+    }
     r.DrawRectangle(detectorX, detectorY, detectorWidth, detectorHeight, color);
+}
+function particle2() {
+    r.DrawRectangle(particle2X, particle2Y, particle2Width, particle2Height, r.BLUE);
 }
 
 function particle() {
@@ -73,6 +81,7 @@ function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
     particle();
+    particle2();
     detector();
     r.EndDrawing();
 }
