@@ -1,27 +1,24 @@
 const r = require("raylib");
 
-const windowWidth = 1000;
-const windowHeight = 1000;
+const windowWidth = 300;
+const windowHeight = 200;
 const FPS = 50;
 
 let detectorX = 0;
-const detectorY = 0;
-const detectorWidth = windowWidth / 10;
-const detectorHeight = windowHeight;
+const detectorWidth = 20
 
+let detector2X = windowWidth - 20;
+let detector3Y = 0;
+const detector2Width = 20;
 let backward = false;
+let backward2 = false;
+let backward3 = false;
 
-const particleX = windowWidth / 3;
-const particleY = 0;
-const particleWidth = windowWidth / 6;
-const particleHeight = windowHeight;
+const particleX = 100;
+const particleWidth = 10;
 
-const particle2X = windowWidth / 2;
-const particle2Y = 0;
-const particle2Width = windowWidth / 12;
-const particle2Height = windowHeight;
-
-let color = r.WHITE;
+const particle2X = 200;
+const particle2Width = 20;
 
 function running() {
     return !r.WindowShouldClose();
@@ -32,57 +29,86 @@ function setup() {
     r.SetTargetFPS(FPS)
 }
 
-function direction() {
-    if (detectorX === 0) {
-        backward = false;
+function Speed(detectX, detectWidth, start, end, detectEnd) {
+    if (detectEnd === windowHeight) {
+        if (detectX === start) {
+            return backward3 = false;
+        }
+        else if (detectX + detectWidth === end) {
+            return backward3 = true;
+        }
     }
-    else if (detectorX + detectorWidth === windowWidth) {
-        backward = true;
+    else if (detectX < detectEnd) {
+        if (detectX === start) {
+            return backward = false;
+            // return false;
+        }
+        else if (detectX + detectWidth === end) {
+            return backward = true;
+            // return true;
+        }
+    }
+    else {
+        if (detectX === start) {
+            return backward2 = false;
+        }
+        else if (detectX + detectWidth === end) {
+            return backward2 = true;
+        }
+    }
+}
+
+function direction(detectX, detectWidth, end, start, speed, backwar, detectEnd) {
+    if (detectX + detectWidth === end || backwar === true) {
+        Speed(detectX, detectWidth, start, end, detectEnd)
+        return detectX -= speed;
+    }
+    else {
+        return detectX += speed;
     }
 }
 
 function update() {
-    if (detectorX + detectorWidth === windowWidth || backward === true) {
-        detectorX -= 3;
-    }
-    else {
-        detectorX += 3;
-    }
-    direction();
+    detectorX = direction(detectorX, detectorWidth, windowWidth / 2, 0, 1, backward, windowWidth / 2);
+    detector2X = direction(detector2X, detector2Width, windowWidth, windowWidth / 2, 2, backward2, windowWidth / 2);
+    detector3Y = direction(detector3Y, 10, windowHeight - 10, 0, 1, backward3, windowHeight)
 }
 
 function detectorColourChange(Xparticle, Xdetector, detectWidth, partWidth) {
     const endXParticle = Xparticle + partWidth;
     let diffBtwX = Xparticle - Xdetector;
-    color = r.WHITE;
+    let color = r.WHITE;
     if (diffBtwX <= detectWidth && Xdetector <= endXParticle) {
         color = r.RED;
     }
+    return color;
 }
 
-function detector() {
-    if (detectorX <= particleX + particleWidth) {
-        detectorColourChange(particleX, detectorX, detectorWidth, particleWidth);
+function detector(particleX, particle2X, particleWidth, particle2Width, detecX, detectorWidth) {
+    if (detecX <= particleX + particleWidth || detecX === particleX) {
+        return detectorColourChange(particleX, detecX, detectorWidth, particleWidth);
     }
     else {
-        detectorColourChange(particle2X, detectorX, detectorWidth, particle2Width);
+        return detectorColourChange(particle2X, detecX, detectorWidth, particle2Width);
     }
-    r.DrawRectangle(detectorX, detectorY, detectorWidth, detectorHeight, color);
-}
-function particle2() {
-    r.DrawRectangle(particle2X, particle2Y, particle2Width, particle2Height, r.BLUE);
 }
 
-function particle() {
-    r.DrawRectangle(particleX, particleY, particleWidth, particleHeight, r.BLUE);
+function color(particleX, particle2X, particleWidth, particle2Width, detectX, detectorWidth) {
+    if (particleX < particle2X) {
+        return detector(particleX, particle2X, particleWidth, particle2Width, detectX, detectorWidth)
+    }
+    return detector(particle2X, particleX, particle2Width, particleWidth, detectX, detectorWidth)
 }
 
 function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
-    particle();
-    particle2();
-    detector();
+    r.DrawRectangle(particleX, 0, particleWidth, windowHeight, r.BLUE);
+    r.DrawRectangle(0, 100, windowWidth, 10, r.BLUE)
+    r.DrawRectangle(particle2X, 0, particle2Width, windowHeight, r.BLUE);
+    r.DrawRectangle(detectorX, 0, detectorWidth, windowHeight, color(particleX, particle2X, particleWidth, particle2Width, detectorX, detectorWidth));
+    r.DrawRectangle(detector2X, 0, detector2Width, windowHeight, color(particleX, particle2X, particleWidth, particle2Width, detector2X, detectorWidth));
+    r.DrawRectangle(0, detector3Y, windowWidth, 20, color(100, 0, 10, 0, detector3Y, 20))
     r.EndDrawing();
 }
 
